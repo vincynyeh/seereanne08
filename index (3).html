@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For BB Anne 💖</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --sea-sky: linear-gradient(180deg, #5db0f4 0%, #a4d4ff 45%, #8ecae6 52%, #48cae4 70%, #0077b6 100%);
+    }
+
+    body {
+      background: var(--sea-sky);
+      background-attachment: fixed;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1e293b;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .page { display: none; min-height: 100vh; width: 100%; }
+    .page.active { display: flex; flex-direction: column; align-items: center; }
+
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(-4deg); }
+      100% { transform: translateY(-12px) rotate(6deg); }
+    }
+    .bottle { animation: float 4s infinite ease-in-out alternate; }
+  </style>
+</head>
+<body class="relative min-h-screen flex flex-col items-center">
+
+  <!-- Floating Navigation Bar -->
+  <nav id="mainNav" class="fixed top-5 z-50 flex gap-2 p-1.5 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-white/50" style="display:none;">
+    <button onclick="showPage('homePage')" class="nav-btn px-4 py-1.5 text-xs font-semibold rounded-full transition-all bg-sky-500 text-white shadow-sm">Home</button>
+    <button onclick="showPage('albumPage')" class="nav-btn px-4 py-1.5 text-xs font-semibold rounded-full transition-all text-slate-600 hover:text-slate-900">Gallery Wall</button>
+    <button onclick="showPage('oceanPage')" class="nav-btn px-4 py-1.5 text-xs font-semibold rounded-full transition-all text-slate-600 hover:text-slate-900">Sea of Notes 🌊</button>
+    <button onclick="startBirthdayFlow()" class="nav-btn px-4 py-1.5 text-xs font-semibold rounded-full transition-all text-slate-600 hover:text-slate-900">B-Day Card 🎂</button>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="w-full min-h-screen pt-24 px-4 pb-12 flex justify-center items-center">
+
+    <!-- 1. BIRTHDAY FLOW -->
+    <div id="bdayPage" class="page active">
+      <div class="glass-card p-8 rounded-3xl max-w-md w-full text-center shadow-xl my-auto">
+        
+        <div id="bStep1" class="b-step">
+          <h2 class="text-xl font-bold text-pink-500 mb-3">BB anne happy birthday !! 🎉</h2>
+          <p class="text-sm text-slate-600 leading-relaxed">May I ask u out during your free time if possible? 🥺👉👈</p>
+          <p class="text-xs text-slate-500 mt-2">Are you free to make an appointment? Im afraid that u r not free only to me 🙁</p>
+          <p class="text-sm font-semibold mt-4 text-slate-700">Are you willing to?</p>
+          
+          <div class="relative flex justify-center items-center gap-4 min-h-[100px] mt-2">
+            <button id="yesBtn" onclick="nextBStep(2)" class="px-6 py-2.5 bg-gradient-to-r from-pink-500 to-rose-400 text-white font-semibold text-xs rounded-xl shadow-lg shadow-pink-500/30 transition-transform duration-200 z-10">Yes! 💖</button>
+            <button id="noBtn" onmouseover="dodgeNo()" onclick="dodgeNo()" class="px-6 py-2.5 bg-slate-400 text-white font-semibold text-xs rounded-xl transition-all absolute z-0">No 😜</button>
+          </div>
+          <div id="delayMsg" class="text-xs text-pink-500 font-semibold mt-2 min-h-[16px]"></div>
+        </div>
+
+        <div id="bStep2" class="b-step hidden">
+          <h2 class="text-xl font-bold text-sky-600 mb-3">I'm so glad you said yes! ✨</h2>
+          <p class="text-sm text-slate-600 leading-relaxed mb-4">I think you are excited for ittt! Next trip: <strong>Penang</strong> if you'd like to! Because it's easier. Let's find a day to do this together! 🌊</p>
+          <p class="text-xs font-semibold text-slate-700 mb-2">Pick a free day in 2026:</p>
+          <input type="date" min="2026-01-01" max="2026-12-31" class="w-full p-2.5 mb-4 border border-slate-200 rounded-xl text-xs bg-slate-50 outline-none focus:border-sky-400" />
+          <button onclick="nextBStep(3)" class="w-full py-2.5 bg-pink-500 text-white font-semibold text-xs rounded-xl shadow-md hover:bg-pink-600">Confirm Date</button>
+        </div>
+
+        <div id="bStep3" class="b-step hidden">
+          <h2 class="text-xl font-bold text-pink-500 mb-3">Thank you for your time! ❤️</h2>
+          <p class="text-xs text-slate-600">Before we go on... Are you happy today?</p>
+          <div class="text-3xl flex justify-around my-6 cursor-pointer">
+            <span onclick="nextBStep(4)">😡</span>
+            <span onclick="nextBStep(4)">😢</span>
+            <span onclick="nextBStep(4)">😐</span>
+            <span onclick="nextBStep(4)">😊</span>
+          </div>
+        </div>
+
+        <div id="bStep4" class="b-step hidden">
+          <p class="text-sm text-slate-600 leading-relaxed mb-6">Ya, it's easy as it's just like that... Can u record ur memory because I wan us to share feelings with each other so we can keep up our friendship...</p>
+          <button onclick="nextBStep(5)" class="w-full py-2.5 bg-pink-500 text-white font-semibold text-xs rounded-xl shadow-md">Next</button>
+        </div>
+
+        <div id="bStep5" class="b-step hidden">
+          <p class="text-sm text-slate-600 leading-relaxed mb-6">I feel like we seldom catch up with each other and go out anymore. Idk, is it because something sad has been happening to me lately, so I feel like I'm a bit lonely...</p>
+          <button onclick="nextBStep(6)" class="w-full py-2.5 bg-pink-500 text-white font-semibold text-xs rounded-xl shadow-md">Next</button>
+        </div>
+
+        <div id="bStep6" class="b-step hidden">
+          <p class="text-sm text-slate-600 leading-relaxed mb-6">And I noticed we've been really getting like strangers, idk why, to each other... but I wan to keep this friendship alive.</p>
+          <button onclick="nextBStep(7)" class="w-full py-2.5 bg-pink-500 text-white font-semibold text-xs rounded-xl shadow-md">Next</button>
+        </div>
+
+        <div id="bStep7" class="b-step hidden">
+          <p class="text-sm text-slate-600 leading-relaxed mb-6">I seldom call u out nowadays mainly because my anxiety dizziness doesn't allow me to talk to u for a long time. I really had no choice... I'm also scared that u will 介意 if I keep feeling dizzy like 扫兴, so I didn't call u out for a long time—even though I really, really miss the time where we could chit-chat and talk shit about others.</p>
+          <button onclick="nextBStep(8)" class="w-full py-2.5 bg-pink-500 text-white font-semibold text-xs rounded-xl shadow-md">Next</button>
+        </div>
+
+        <div id="bStep8" class="b-step hidden">
+          <p class="text-sm text-slate-600 leading-relaxed mb-6">Anyway, I really hope we can have some time where we can chill, stop talking, relax, happily, one day, living our best life together, 自然相处 like how we usually do.</p>
+          <button onclick="nextBStep(9)" class="w-full py-2.5 bg-pink-500 text-white font-semibold text-xs rounded-xl shadow-md">Next</button>
+        </div>
+
+        <div id="bStep9" class="b-step hidden">
+          <div class="text-5xl text-pink-500 mb-2">❤️</div>
+          <h2 class="text-xl font-bold text-slate-800 mb-6">Btw, I miss u ❤️</h2>
+          <button onclick="finishBirthdayFlow()" class="w-full py-2.5 bg-sky-500 text-white font-semibold text-xs rounded-xl shadow-md hover:bg-sky-600">Enter Our Ocean Space 🌊</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 2. HOME PAGE -->
+    <div id="homePage" class="page">
+      <div class="glass-card p-8 rounded-3xl max-w-md w-full text-center shadow-xl my-auto">
+        <h2 class="text-xl font-bold text-sky-700 mb-1">We've Known Each Other For ✨</h2>
+        <p class="text-xs text-slate-500 mb-6">Since February 2017</p>
+
+        <div class="grid grid-cols-3 gap-3 mb-6">
+          <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-100"><span id="years" class="block text-xl font-bold text-sky-600">0</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Years</span></div>
+          <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-100"><span id="months" class="block text-xl font-bold text-sky-600">0</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Months</span></div>
+          <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-100"><span id="days" class="block text-xl font-bold text-sky-600">0</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Days</span></div>
+          <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-100"><span id="hours" class="block text-xl font-bold text-sky-600">0</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Hours</span></div>
+          <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-100"><span id="minutes" class="block text-xl font-bold text-sky-600">0</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Mins</span></div>
+          <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-100"><span id="seconds" class="block text-xl font-bold text-sky-600">0</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Secs</span></div>
+        </div>
+
+        <p class="text-xs text-slate-500 italic">Every single moment matters! 💖</p>
+      </div>
+    </div>
+
+    <!-- 3. GALLERY ALBUM PAGE -->
+    <div id="albumPage" class="page">
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-white drop-shadow">Our Memory Exhibition 🏛️</h2>
+        <p class="text-xs text-white/90 mt-1">Drag horizontally to stroll through the gallery</p>
+      </div>
+
+      <div id="museumViewport" class="w-full max-w-4xl h-[400px] glass-card rounded-3xl relative overflow-hidden shadow-2xl cursor-grab">
+        <div id="museumWall" class="absolute top-0 left-0 h-full flex items-center gap-10 px-12 transition-all duration-75" style="width: 1600px;">
+          <div class="bg-white p-3 pb-6 rounded-xl shadow-lg text-center cursor-pointer min-w-[180px]">
+            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=300" class="w-40 h-40 object-cover rounded-lg" />
+            <p class="text-xs font-semibold text-slate-700 mt-2">Our First Hangout</p>
+          </div>
+          <div class="bg-white p-3 pb-6 rounded-xl shadow-lg text-center cursor-pointer min-w-[180px]">
+            <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=300" class="w-40 h-40 object-cover rounded-lg" />
+            <p class="text-xs font-semibold text-slate-700 mt-2">Road Trip</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. OCEAN PAGE -->
+    <div id="oceanPage" class="page">
+      <div class="fixed top-24 z-10 flex gap-2 bg-white/70 backdrop-blur-md p-1.5 rounded-full shadow-sm">
+        <button onclick="filterBottles('ours')" class="sea-tab px-4 py-1 text-xs font-semibold rounded-full bg-white text-sky-600 shadow">Our Memory</button>
+        <button onclick="filterBottles('my')" class="sea-tab px-4 py-1 text-xs font-semibold rounded-full text-slate-600">My Memory</button>
+        <button onclick="filterBottles('vincy')" class="sea-tab px-4 py-1 text-xs font-semibold rounded-full text-slate-600">Vincy's Memory</button>
+        <button onclick="filterBottles('self')" class="sea-tab px-4 py-1 text-xs font-semibold rounded-full text-slate-600">Only Me</button>
+      </div>
+
+      <!-- Floating Bottle Canvas Container -->
+      <div id="oceanContainer" class="fixed inset-0 w-full h-full overflow-hidden"></div>
+
+      <!-- Drop Bottle FAB -->
+      <button onclick="openModal('writeModal')" class="fixed bottom-8 right-8 z-20 px-5 py-3 bg-gradient-to-r from-pink-500 to-rose-400 text-white font-bold text-xs rounded-full shadow-xl hover:scale-105 transition-transform">
+        🍾 Drop Bottle
+      </button>
+    </div>
+
+  </main>
+
+  <!-- WRITE BOTTLE MODAL -->
+  <div id="writeModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+    <div class="bg-white p-6 rounded-2xl max-w-sm w-full shadow-xl">
+      <h3 class="font-bold text-slate-800 text-base mb-2">Write a Bottle Note 📝</h3>
+      <textarea id="bottleText" placeholder="Write your diary, message, or wish..." class="w-full h-24 p-3 border border-slate-200 rounded-xl text-xs bg-slate-50 outline-none focus:border-sky-400 mb-3"></textarea>
+      
+      <label class="text-xs font-semibold text-slate-600">Select Mood:</label>
+      <select id="bottleMood" class="w-full p-2 border border-slate-200 rounded-xl text-xs bg-slate-50 outline-none mb-3">
+        <option value="😊 Happy">😊 Happy</option>
+        <option value="😐 Neutral">😐 Neutral</option>
+        <option value="😢 Sad">😢 Sad</option>
+        <option value="😡 Angry">😡 Angry</option>
+      </select>
+
+      <div class="flex gap-2 justify-end">
+        <button onclick="closeModal('writeModal')" class="px-4 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl">Discard</button>
+        <button onclick="throwBottle()" class="px-4 py-2 bg-pink-500 text-white text-xs font-semibold rounded-xl shadow-md">Cast Away 🌊</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- READ BOTTLE MODAL -->
+  <div id="readModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+    <div class="bg-white p-6 rounded-2xl max-w-sm w-full shadow-xl">
+      <h3 id="readMeta" class="font-semibold text-sky-600 text-xs mb-1"></h3>
+      <p id="readBody" class="text-slate-700 text-sm my-4 leading-relaxed"></p>
+      <button onclick="closeModal('readModal')" class="w-full py-2 bg-sky-500 text-white font-medium text-xs rounded-xl hover:bg-sky-600">Close</button>
+    </div>
+  </div>
+
+  <script>
+    let yesScale = 1;
+    let bottles = [
+      { sender: 'Vincy', category: 'ours', mood: '😊 Happy', text: 'Can\'t wait for our Penang trip!', x: 25, y: 65 },
+      { sender: 'Reanne', category: 'my', mood: '😊 Happy', text: 'Having a calm day today.', x: 65, y: 75 }
+    ];
+
+    window.onload = function() {
+      if (localStorage.getItem('bdayShown') === 'true') {
+        startMainApp();
+      } else {
+        startBirthdayFlow();
+      }
+      initTimer();
+      renderBottles('ours');
+      setupMuseumDrag();
+    };
+
+    function startBirthdayFlow() {
+      document.getElementById('mainNav').style.display = 'none';
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('bdayPage').classList.add('active');
+      document.querySelectorAll('.b-step').forEach(s => s.classList.add('hidden'));
+      document.getElementById('bStep1').classList.remove('hidden');
+      confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+    }
+
+    function dodgeNo() {
+      const noBtn = document.getElementById('noBtn');
+      const yesBtn = document.getElementById('yesBtn');
+      const delayMsg = document.getElementById('delayMsg');
+
+      const x = Math.random() * 140 - 70;
+      const y = Math.random() * 60 - 30;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+
+      yesScale += 0.2;
+      yesBtn.style.transform = `scale(${yesScale})`;
+
+      setTimeout(() => {
+        delayMsg.innerText = "我们的友情 还需要一秒的犹豫时间吗 🥺";
+      }, 800);
+    }
+
+    function nextBStep(stepNum) {
+      document.querySelectorAll('.b-step').forEach(s => s.classList.add('hidden'));
+      document.getElementById(`bStep${stepNum}`).classList.remove('hidden');
+    }
+
+    function finishBirthdayFlow() {
+      localStorage.setItem('bdayShown', 'true');
+      startMainApp();
+      showPage('oceanPage');
+    }
+
+    function startMainApp() {
+      document.getElementById('mainNav').style.display = 'flex';
+      showPage('homePage');
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.remove('bg-sky-500', 'text-white', 'shadow-sm');
+        b.classList.add('text-slate-600');
+      });
+
+      document.getElementById(pageId).classList.add('active');
+      
+      if(event && event.target && event.target.classList.contains('nav-btn')) {
+        event.target.classList.add('bg-sky-500', 'text-white', 'shadow-sm');
+        event.target.classList.remove('text-slate-600');
+      }
+    }
+
+    function initTimer() {
+      const startDate = new Date('2017-02-01T00:00:00');
+      setInterval(() => {
+        const now = new Date();
+        const diff = now - startDate;
+
+        document.getElementById('years').innerText = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+        document.getElementById('months').innerText = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.4375));
+        document.getElementById('days').innerText = Math.floor((diff % (1000 * 60 * 60 * 24 * 30.4375)) / (1000 * 60 * 60 * 24));
+        document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000);
+      }, 1000);
+    }
+
+    function setupMuseumDrag() {
+      const viewport = document.getElementById('museumViewport');
+      const wall = document.getElementById('museumWall');
+      let isDown = false, startX, scrollLeft;
+
+      viewport.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - wall.offsetLeft;
+        scrollLeft = wall.offsetLeft;
+      });
+      viewport.addEventListener('mouseleave', () => isDown = false);
+      viewport.addEventListener('mouseup', () => isDown = false);
+      viewport.addEventListener('mousemove', (e) => {
+        if(!isDown) return;
+        e.preventDefault();
+        wall.style.left = `${scrollLeft + (e.pageX - wall.offsetLeft - startX)}px`;
+      });
+    }
+
+    function filterBottles(cat) {
+      document.querySelectorAll('.sea-tab').forEach(b => {
+        b.classList.remove('bg-white', 'text-sky-600', 'shadow');
+        b.classList.add('text-slate-600');
+      });
+      if(event && event.target) {
+        event.target.classList.add('bg-white', 'text-sky-600', 'shadow');
+      }
+      renderBottles(cat);
+    }
+
+    function renderBottles(cat) {
+      const container = document.getElementById('oceanContainer');
+      container.innerHTML = '';
+
+      bottles.forEach((b, index) => {
+        if (cat === 'ours' || b.category === cat) {
+          const btn = document.createElement('button');
+          btn.className = 'bottle absolute text-4xl hover:scale-125 transition-transform duration-200 cursor-pointer filter drop-shadow-md';
+          btn.style.left = `${b.x}%`;
+          btn.style.top = `${b.y}%`;
+          btn.innerText = '🍾';
+          btn.onclick = () => openReadModal(index);
+          container.appendChild(btn);
+        }
+      });
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function throwBottle() {
+      const text = document.getElementById('bottleText').value;
+      const mood = document.getElementById('bottleMood').value;
+      if (!text) return;
+
+      bottles.push({
+        sender: 'Reanne',
+        category: 'ours',
+        mood: mood,
+        text: text,
+        x: Math.random() * 80 + 10,
+        y: Math.random() * 30 + 55
+      });
+
+      renderBottles('ours');
+      closeModal('writeModal');
+      document.getElementById('bottleText').value = '';
+    }
+
+    function openReadModal(index) {
+      const b = bottles[index];
+      document.getElementById('readMeta').innerText = `${b.sender} • ${b.mood}`;
+      document.getElementById('readBody').innerText = b.text;
+      openModal('readModal');
+    }
+  </script>
+</body>
+</html>
